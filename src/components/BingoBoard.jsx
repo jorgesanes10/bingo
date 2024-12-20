@@ -1,45 +1,55 @@
-import { useRef, useState } from "react"
-import generateBoard, { generateRandomNumber } from "../utils"
+import { useRef, useState } from 'react';
+import generateBoard, { generateRandomNumber } from '../utils';
 
 export default function BingoBoard() {
-    const [pickedNumber, setPickedNumber] = useState(undefined);
-    const [pickedNumbers, setPickedNumbers] = useState([]);
-    
-    const boardNumbers = useRef(generateBoard());
+  const [pickedNumbers, setPickedNumbers] = useState([]);
 
-    const renderBoard = () => {
-        const columns = [];
+  const boardNumbers = useRef(generateBoard());
 
-        boardNumbers.current.forEach((column, index) => {
-            columns.push(<div key={index}>{column.map(number => <span className={pickedNumbers.find(num => num === number) ? 'selected' : ''} key={number}>{number}</span>)}</div>)
-        })
+  const renderBoard = () => {
+    const columns = [];
 
-        return columns;
+    boardNumbers.current.forEach((column, index) => {
+      columns.push(
+        <div key={index}>
+          {column.map((number) => (
+            <div
+              className={`number-container ${pickedNumbers.find((num) => num === number) ? 'selected' : ''}`}
+              key={number}
+            >
+              <span>{number}</span>
+            </div>
+          ))}
+        </div>,
+      );
+    });
+
+    return columns;
+  };
+
+  const generateNumber = () => {
+    const newNumber = generateRandomNumber(1, 75);
+
+    if (!pickedNumbers.find((num) => num === newNumber)) {
+      setPickedNumbers((prevState) => [...prevState, newNumber]);
+    } else {
+      return generateNumber();
     }
+  };
 
-    const generateNumber = () => {
-        const newNumber = generateRandomNumber(1, 75);
-        setPickedNumber(newNumber);
+  const handleButtonClick = () => {
+    generateNumber();
+  };
 
-        if (!pickedNumbers.find(num => num === newNumber)) {
-            setPickedNumbers(prevState => [...prevState, newNumber])
-        } else {
-            return generateNumber();
-        }
-    }
+  console.log(pickedNumbers);
 
-    const handleButtonClick = () => {
-        generateNumber();
-    }
-
-    console.log(pickedNumbers);
-    
-    
-    return <div>
-        <p className="picked-number">{pickedNumber || '?'}</p>
-        <button onClick={handleButtonClick}>Pick number</button>
-        <div className="bingo-board">
-        {renderBoard()}
+  return (
+    <div>
+      <p className="picked-number">
+        {pickedNumbers[pickedNumbers.length - 1] || '?'}
+      </p>
+      <button onClick={handleButtonClick}>Pick number</button>
+      <div className="bingo-board">{renderBoard()}</div>
     </div>
-    </div>
+  );
 }

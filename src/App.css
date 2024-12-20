@@ -43,6 +43,9 @@
 
 .bingo-board {
   display: flex;
+  background-color: #f6f6f6;
+  color: #333;
+  perspective: 800px;
 }
 
 .bingo-board > div {
@@ -50,9 +53,36 @@
   flex-direction: column;
 }
 
-.bingo-board span {
+.bingo-board .number-container {
   height: 60px;
   width: 60px;
+  border: 1px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  perspective: 100px;
+  z-index: 0;
+}
+
+.number-container:after {
+  content: "";
+  z-index: 10;
+  display: block;
+  background-color: red;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease-in-out;
+  transform: scale(5);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bingo-board span {
+  display: block;
   font-size: 28px;
 }
 
@@ -60,6 +90,11 @@
   font-size: 48px;
 }
 
-.selected {
-  background-color: green;
+.selected:after {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.selected:hover:after {
+  transform: translateX(20px) translateZ(10px) rotateY(60deg);
 }
